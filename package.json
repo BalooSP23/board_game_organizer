@@ -14,6 +14,7 @@
     "@prisma/client": "^7.6.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "fast-xml-parser": "^5.5.9",
     "lucide-react": "^1.7.0",
     "next": "^15.3.3",
     "prisma": "^7.6.0",

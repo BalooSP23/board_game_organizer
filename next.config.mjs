@@ -3,12 +3,15 @@ const nextConfig = {
   typescript: {
     tsconfigPath: "tsconfig.json",
   },
-  generateBuildId: () => null,
   images: {
     remotePatterns: [
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
+      },
+      {
+        protocol: "https",
+        hostname: "cf.geekdo-images.com",
       },
     ],
   },
