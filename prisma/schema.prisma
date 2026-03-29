@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Game {
+  id             String    @id @default(cuid())
+  bggId          Int?      @unique
+  name           String
+  description    String?   @db.Text
+  thumbnailUrl   String?
+  imageUrl       String?
+  minPlayers     Int?
+  maxPlayers     Int?
+  playingTime    Int?
+  minPlayingTime Int?
+  yearPublished  Int?
+  rating         Float?
+  weight         Float?
+  categories     Json?
+  mechanics      Json?
+
+  // Box dimensions (cm)
+  boxWidth  Float?
+  boxHeight Float?
+  boxDepth  Float?
+
+  // Purchase info
+  purchasePrice  Float?
+  purchaseDate   DateTime?
+  notes          String?   @db.Text
+
+  // Wishlist
+  isWishlisted   Boolean   @default(false)
+  wishlistShopUrl String?
+
+  // Extension self-relation
+  parentGameId     String?
+  parentGame       Game?    @relation("GameExtensions", fields: [parentGameId], references: [id])
+  extensions       Game[]   @relation("GameExtensions")
+  fitsInParentBox  Boolean  @default(false)
+
+  // Relations
+  images Image[]
+  loans  Loan[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+  @@index([isWishlisted])
+  @@index([parentGameId])
+}
+
+model Image {
+  id                String @id @default(cuid())
+  gameId            String
+  game              Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  url               String
+  cloudinaryPublicId String?
+  caption           String?
+  sortOrder         Int    @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@index([gameId])
+}
+
+model Loan {
+  id           String    @id @default(cuid())
+  gameId       String
+  game         Game      @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  borrowerName String
+  loanDate     DateTime  @default(now())
+  returnDate   DateTime?
+  notes        String?   @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([gameId])
+  @@index([borrowerName])
+}
