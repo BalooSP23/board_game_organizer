@@ -1,0 +1,82 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+:root {
+  /* Board game ludique palette — warm, playful, inviting */
+  --background: hsl(30 25% 97%);
+  --foreground: hsl(25 20% 15%);
+
+  --card: hsl(30 20% 99%);
+  --card-foreground: hsl(25 20% 15%);
+
+  --popover: hsl(30 20% 99%);
+  --popover-foreground: hsl(25 20% 15%);
+
+  --primary: hsl(30 90% 48%);
+  --primary-foreground: hsl(0 0% 100%);
+
+  --secondary: hsl(174 60% 40%);
+  --secondary-foreground: hsl(0 0% 100%);
+
+  --muted: hsl(30 15% 92%);
+  --muted-foreground: hsl(25 10% 45%);
+
+  --accent: hsl(174 60% 40%);
+  --accent-foreground: hsl(0 0% 100%);
+
+  --destructive: hsl(0 72% 51%);
+  --destructive-foreground: hsl(0 0% 100%);
+
+  --border: hsl(30 15% 85%);
+  --input: hsl(30 15% 85%);
+  --ring: hsl(30 90% 48%);
+
+  --radius: 0.75rem;
+
+  --success: hsl(142 70% 40%);
+  --success-foreground: hsl(0 0% 100%);
+
+  --warning: hsl(45 93% 47%);
+  --warning-foreground: hsl(25 20% 15%);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: "Nunito", "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+}
