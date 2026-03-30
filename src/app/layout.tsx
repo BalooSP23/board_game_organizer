@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { NavLink } from "@/components/nav-link";
+import { CommandPaletteProvider, CommandPaletteTrigger } from "@/components/command-palette-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -35,9 +36,14 @@ export default function RootLayout({
                 Découvrir
               </NavLink>
             </div>
+            <div className="ml-auto">
+              <CommandPaletteTrigger />
+            </div>
           </div>
         </nav>
-        {children}
+        <CommandPaletteProvider>
+          {children}
+        </CommandPaletteProvider>
       </body>
     </html>
   );
