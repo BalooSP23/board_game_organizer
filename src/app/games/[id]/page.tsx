@@ -7,6 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Users, Clock, Brain, Star, Box } from "lucide-react";
 import { AiSummary } from "@/components/ai-summary";
 import { GameGallery } from "@/components/game-gallery";
+import { WishlistToggle } from "@/components/wishlist-toggle";
+import { LoanManager } from "@/components/loan-manager";
+import { PurchaseInfo } from "@/components/purchase-info";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +21,7 @@ export default async function GameDetailPage({
   const { id } = await params;
   const game = await prisma.game.findUnique({
     where: { id },
-    include: { images: { orderBy: { sortOrder: "asc" } } },
+    include: { images: { orderBy: { sortOrder: "asc" } }, loans: { orderBy: { loanDate: "desc" } } },
   });
 
   if (!game) notFound();
@@ -83,6 +86,11 @@ export default async function GameDetailPage({
                 {game.yearPublished}
               </p>
             )}
+            <WishlistToggle
+              gameId={game.id}
+              initialWishlisted={game.isWishlisted}
+              initialShopUrl={game.wishlistShopUrl}
+            />
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -187,9 +195,27 @@ export default async function GameDetailPage({
         initialGeneratedAt={game.aiSummaryGeneratedAt?.toISOString() ?? null}
       />
 
-      {/* Photo gallery & placeholder sections */}
+      {/* Photo gallery & management sections */}
       <div className="grid md:grid-cols-2 gap-4">
         <GameGallery gameId={game.id} initialImages={game.images} />
+        <PurchaseInfo
+          gameId={game.id}
+          initialPrice={game.purchasePrice}
+          initialDate={game.purchaseDate?.toISOString().split("T")[0] ?? null}
+        />
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4 mt-4">
+        <LoanManager
+          gameId={game.id}
+          initialLoans={game.loans.map((l) => ({
+            id: l.id,
+            borrowerName: l.borrowerName,
+            loanDate: l.loanDate.toISOString(),
+            returnDate: l.returnDate?.toISOString() ?? null,
+            notes: l.notes,
+          }))}
+        />
         <PlaceholderCard title="Extensions" />
       </div>
     </div>
