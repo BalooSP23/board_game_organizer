@@ -27,6 +27,7 @@ export default function RootLayout({
             </Link>
             <div className="flex items-center gap-4 text-sm">
               <NavLink href="/collection">Collection</NavLink>
+              <NavLink href="/rangement">Rangement</NavLink>
               <NavLink
                 href="/decouvrir"
                 activeClassName="text-teal-700 font-semibold"
