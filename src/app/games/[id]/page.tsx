@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Users, Clock, Brain, Star, Box } from "lucide-react";
+import { AiSummary } from "@/components/ai-summary";
 
 export const dynamic = "force-dynamic";
 
@@ -175,9 +176,15 @@ export default async function GameDetailPage({
         </Card>
       )}
 
+      {/* AI Summary */}
+      <AiSummary
+        gameId={game.id}
+        initialSummary={game.aiSummary ?? null}
+        initialGeneratedAt={game.aiSummaryGeneratedAt?.toISOString() ?? null}
+      />
+
       {/* Placeholder sections */}
-      <div className="grid md:grid-cols-3 gap-4">
-        <PlaceholderCard title="Résumé IA" />
+      <div className="grid md:grid-cols-2 gap-4">
         <PlaceholderCard title="Galerie photos" />
         <PlaceholderCard title="Extensions" />
       </div>
