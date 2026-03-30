@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { NavLink } from "@/components/nav-link";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,24 +20,19 @@ export default function RootLayout({
         <nav className="border-b bg-white/80 backdrop-blur sticky top-0 z-50">
           <div className="container mx-auto px-4 max-w-5xl flex items-center gap-6 h-14">
             <Link
-              href="/"
+              href="/collection"
               className="font-bold text-amber-900 hover:text-amber-700 transition-colors"
             >
               🎲 Ma Ludothèque
             </Link>
             <div className="flex items-center gap-4 text-sm">
-              <Link
-                href="/"
-                className="text-muted-foreground hover:text-amber-800 transition-colors"
-              >
-                Collection
-              </Link>
-              <Link
+              <NavLink href="/collection">Collection</NavLink>
+              <NavLink
                 href="/decouvrir"
-                className="text-muted-foreground hover:text-teal-700 transition-colors"
+                activeClassName="text-teal-700 font-semibold"
               >
                 Découvrir
-              </Link>
+              </NavLink>
             </div>
           </div>
         </nav>
