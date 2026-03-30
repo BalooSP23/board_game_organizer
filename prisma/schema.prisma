@@ -49,8 +49,9 @@ model Game {
   fitsInParentBox  Boolean  @default(false)
 
   // Relations
-  images Image[]
-  loans  Loan[]
+  images     Image[]
+  loans      Loan[]
+  placements GamePlacement[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -108,6 +109,7 @@ model FurnitureCell {
   col         Int
   hasLaxRax   Boolean     @default(false)
   shelves     CellShelf[]
+  placements  GamePlacement[]
 
   @@unique([furnitureId, row, col])
   @@index([furnitureId])
@@ -120,6 +122,26 @@ model CellShelf {
   position   Int
   heightCm   Float
   spacingMm  Int           @default(0)
+  placements GamePlacement[]
 
   @@index([cellId])
+}
+
+model GamePlacement {
+  id          String         @id @default(cuid())
+  gameId      String
+  game        Game           @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  cellId      String
+  cell        FurnitureCell  @relation(fields: [cellId], references: [id], onDelete: Cascade)
+  shelfId     String?
+  shelf       CellShelf?     @relation(fields: [shelfId], references: [id], onDelete: SetNull)
+  position    Int            @default(0)
+  orientation String         @default("front") // front | side | stacked
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@unique([gameId])
+  @@index([cellId])
+  @@index([gameId])
 }
