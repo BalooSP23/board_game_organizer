@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { KallaxSizePicker } from "@/components/kallax-size-picker";
 import { FurnitureConfig } from "@/components/furniture-config";
+import { Kallax3D } from "@/components/kallax-3d";
 import { KALLAX_SIZES } from "@/lib/kallax";
 
 type KallaxSize = (typeof KALLAX_SIZES)[number];
@@ -183,7 +184,15 @@ export default function RangementPage() {
             </CardHeader>
             {editingId === f.id && (
               <CardContent>
-                <FurnitureConfig furniture={f} onUpdate={fetchFurniture} />
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <FurnitureConfig furniture={f} onUpdate={fetchFurniture} />
+                  <Kallax3D furniture={f} />
+                </div>
+              </CardContent>
+            )}
+            {editingId !== f.id && (
+              <CardContent className="pt-0">
+                <Kallax3D furniture={f} />
               </CardContent>
             )}
           </Card>
