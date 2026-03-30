@@ -34,7 +34,7 @@ export default async function CollectionPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Ma Collection</h1>
+        <h1 className="text-2xl font-bold text-amber-900">Ma Collection</h1>
         <ImportDialog>
           <Button>Importer un jeu</Button>
         </ImportDialog>
