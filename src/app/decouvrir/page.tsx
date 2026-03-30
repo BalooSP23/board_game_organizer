@@ -132,8 +132,23 @@ export default function DecouvrirPage() {
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                 ) : (
-                  <div className="flex h-full items-center justify-center text-muted-foreground text-3xl">
-                    🎲
+                  <div className="flex h-full items-center justify-center bg-gradient-to-br from-teal-50 to-amber-50">
+                    <svg
+                      width="48"
+                      height="48"
+                      viewBox="0 0 48 48"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="text-teal-300"
+                      aria-hidden="true"
+                    >
+                      <rect x="6" y="6" width="36" height="36" rx="6" stroke="currentColor" strokeWidth="2" fill="none" />
+                      <circle cx="16" cy="16" r="3" fill="currentColor" />
+                      <circle cx="32" cy="16" r="3" fill="currentColor" />
+                      <circle cx="24" cy="24" r="3" fill="currentColor" />
+                      <circle cx="16" cy="32" r="3" fill="currentColor" />
+                      <circle cx="32" cy="32" r="3" fill="currentColor" />
+                    </svg>
                   </div>
                 )}
               </div>
