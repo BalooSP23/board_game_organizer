@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { KallaxSizePicker } from "@/components/kallax-size-picker";
 import { FurnitureConfig } from "@/components/furniture-config";
 import { Kallax3D, type PlacedGame } from "@/components/kallax-3d";
+import { ReorganizationProposal, type ProposedMove, type NewPlacement } from "@/components/reorganization-proposal";
 import { KALLAX_SIZES } from "@/lib/kallax";
 
 type KallaxSize = (typeof KALLAX_SIZES)[number];
@@ -76,6 +77,16 @@ export default function RangementPage() {
   // Click-to-move state machine: idle | selected
   const [selectedPlacementId, setSelectedPlacementId] = useState<string | null>(null);
   const [selectedFurnitureId, setSelectedFurnitureId] = useState<string | null>(null);
+
+  // Reorganization proposal state
+  const [reorgOpen, setReorgOpen] = useState(false);
+  const [reorgApplying, setReorgApplying] = useState(false);
+  const [reorgMoves, setReorgMoves] = useState<ProposedMove[]>([]);
+  const [reorgAdded, setReorgAdded] = useState<NewPlacement[]>([]);
+  const [reorgUnplaceable, setReorgUnplaceable] = useState<{ gameId: string; gameName: string; reason: string }[]>([]);
+  const [reorgPlacements, setReorgPlacements] = useState<Array<{ gameId: string; cellId: string; shelfId?: string; position: number; orientation: string }>>([]);
+  const [reorgSelectedGame, setReorgSelectedGame] = useState<string | null>(null);
+  const [reorgFurnitureId, setReorgFurnitureId] = useState<string | null>(null);
 
   const fetchAll = useCallback(async () => {
     const [furRes, plRes, gRes] = await Promise.all([
@@ -157,6 +168,46 @@ export default function RangementPage() {
     });
     await fetchAll();
     setAutoPlacing(false);
+  }
+
+  async function handleReorganize(gameId: string, furnitureId: string) {
+    const res = await fetch("/api/placement/reorganize", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ gameId, furnitureId }),
+    });
+    const data = await res.json();
+    setReorgMoves(data.moves ?? []);
+    setReorgAdded(data.added ?? []);
+    setReorgUnplaceable(data.unplaceable ?? []);
+    setReorgPlacements(data.placements ?? []);
+    setReorgSelectedGame(gameId);
+    setReorgFurnitureId(furnitureId);
+    setReorgOpen(true);
+  }
+
+  async function handleApplyReorg() {
+    setReorgApplying(true);
+    const furId = reorgFurnitureId;
+    if (!furId) return;
+
+    // Remove existing placements for this furniture
+    const existingForFurniture = placements.filter((p) => p.cell.furnitureId === furId);
+    for (const p of existingForFurniture) {
+      await fetch(`/api/placement/${p.id}`, { method: "DELETE" });
+    }
+
+    // Re-place all games from the reorganization result at once
+    const allGameIdsForFurniture = reorgPlacements.map((p) => p.gameId);
+    await fetch("/api/placement", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ gameIds: allGameIdsForFurniture, furnitureId: furId }),
+    });
+
+    await fetchAll();
+    setReorgApplying(false);
+    setReorgOpen(false);
   }
 
   async function handleCreate() {
@@ -345,12 +396,22 @@ export default function RangementPage() {
                       🎲
                     </div>
                   )}
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <p className="text-xs font-medium truncate">{g.name}</p>
                     {(g.boxWidth == null || g.boxHeight == null || g.boxDepth == null) && (
                       <p className="text-[10px] text-orange-600">Dimensions manquantes</p>
                     )}
                   </div>
+                  {furnitureList.length > 0 && g.boxWidth != null && g.boxHeight != null && g.boxDepth != null && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-[10px] px-1.5 py-0.5 h-auto"
+                      onClick={() => handleReorganize(g.id, furnitureList[0].id)}
+                    >
+                      Réorganiser
+                    </Button>
+                  )}
                 </div>
               ))}
             </div>
@@ -363,6 +424,16 @@ export default function RangementPage() {
           Cliquez sur une case pour déplacer le jeu • <button onClick={() => { setSelectedPlacementId(null); setSelectedFurnitureId(null); }} className="underline">Annuler</button>
         </div>
       )}
+
+      <ReorganizationProposal
+        open={reorgOpen}
+        onClose={() => setReorgOpen(false)}
+        onApply={handleApplyReorg}
+        applying={reorgApplying}
+        moves={reorgMoves}
+        added={reorgAdded}
+        unplaceable={reorgUnplaceable}
+      />
     </main>
   );
 }
