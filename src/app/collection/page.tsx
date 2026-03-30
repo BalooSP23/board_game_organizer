@@ -1,24 +1,35 @@
 import { prisma } from "@/lib/prisma";
 import { GameCard } from "@/components/game-card";
 import { ImportDialog } from "@/components/import-dialog";
+import { CollectionValue } from "@/components/collection-value";
 import { Button } from "@/components/ui/button";
 
 export const dynamic = "force-dynamic";
 export default async function CollectionPage() {
-  const games = await prisma.game.findMany({
-    where: { isWishlisted: false },
-    orderBy: { name: "asc" },
-    select: {
-      id: true,
-      name: true,
-      yearPublished: true,
-      thumbnailUrl: true,
-      minPlayers: true,
-      maxPlayers: true,
-      playingTime: true,
-      rating: true,
-    },
-  });
+  const [games, aggregate, gamesWithPrice] = await Promise.all([
+    prisma.game.findMany({
+      where: { isWishlisted: false },
+      orderBy: { name: "asc" },
+      select: {
+        id: true,
+        name: true,
+        yearPublished: true,
+        thumbnailUrl: true,
+        minPlayers: true,
+        maxPlayers: true,
+        playingTime: true,
+        rating: true,
+      },
+    }),
+    prisma.game.aggregate({
+      where: { isWishlisted: false },
+      _sum: { purchasePrice: true },
+      _count: true,
+    }),
+    prisma.game.count({
+      where: { isWishlisted: false, purchasePrice: { not: null } },
+    }),
+  ]);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -28,6 +39,12 @@ export default async function CollectionPage() {
           <Button>Importer un jeu</Button>
         </ImportDialog>
       </div>
+
+      <CollectionValue
+        totalValue={aggregate._sum.purchasePrice ?? 0}
+        gameCount={aggregate._count}
+        gamesWithPrice={gamesWithPrice}
+      />
 
       {games.length === 0 ? (
         <div className="text-center py-16">
