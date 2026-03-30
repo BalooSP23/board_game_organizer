@@ -3,6 +3,7 @@ import { GameCard } from "@/components/game-card";
 import { ImportDialog } from "@/components/import-dialog";
 import { Button } from "@/components/ui/button";
 
+export const dynamic = "force-dynamic";
 export default async function CollectionPage() {
   const games = await prisma.game.findMany({
     where: { isWishlisted: false },
