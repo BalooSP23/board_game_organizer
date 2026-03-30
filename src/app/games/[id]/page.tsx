@@ -10,6 +10,7 @@ import { GameGallery } from "@/components/game-gallery";
 import { WishlistToggle } from "@/components/wishlist-toggle";
 import { LoanManager } from "@/components/loan-manager";
 import { PurchaseInfo } from "@/components/purchase-info";
+import { ExtensionManager } from "@/components/extension-manager";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +22,12 @@ export default async function GameDetailPage({
   const { id } = await params;
   const game = await prisma.game.findUnique({
     where: { id },
-    include: { images: { orderBy: { sortOrder: "asc" } }, loans: { orderBy: { loanDate: "desc" } } },
+    include: {
+      images: { orderBy: { sortOrder: "asc" } },
+      loans: { orderBy: { loanDate: "desc" } },
+      extensions: { select: { id: true, name: true, thumbnailUrl: true, fitsInParentBox: true } },
+      parentGame: { select: { id: true, name: true } },
+    },
   });
 
   if (!game) notFound();
@@ -216,7 +222,11 @@ export default async function GameDetailPage({
             notes: l.notes,
           }))}
         />
-        <PlaceholderCard title="Extensions" />
+        <ExtensionManager
+          gameId={game.id}
+          initialExtensions={game.extensions}
+          parentGame={game.parentGame}
+        />
       </div>
     </div>
   );
@@ -240,17 +250,3 @@ function InfoTile({
   );
 }
 
-function PlaceholderCard({ title }: { title: string }) {
-  return (
-    <Card className="opacity-60">
-      <CardHeader>
-        <CardTitle className="text-base">{title}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm text-muted-foreground italic">
-          Bientôt disponible
-        </p>
-      </CardContent>
-    </Card>
-  );
-}
