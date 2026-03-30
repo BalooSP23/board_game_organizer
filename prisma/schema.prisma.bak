@@ -89,37 +89,3 @@ model Loan {
   @@index([gameId])
   @@index([borrowerName])
 }
-
-model Furniture {
-  id        String          @id @default(cuid())
-  name      String
-  rows      Int
-  cols      Int
-  cells     FurnitureCell[]
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
-}
-
-model FurnitureCell {
-  id          String      @id @default(cuid())
-  furnitureId String
-  furniture   Furniture   @relation(fields: [furnitureId], references: [id], onDelete: Cascade)
-  row         Int
-  col         Int
-  hasLaxRax   Boolean     @default(false)
-  shelves     CellShelf[]
-
-  @@unique([furnitureId, row, col])
-  @@index([furnitureId])
-}
-
-model CellShelf {
-  id         String        @id @default(cuid())
-  cellId     String
-  cell       FurnitureCell @relation(fields: [cellId], references: [id], onDelete: Cascade)
-  position   Int
-  heightCm   Float
-  spacingMm  Int           @default(0)
-
-  @@index([cellId])
-}
