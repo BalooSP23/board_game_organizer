@@ -8,6 +8,17 @@ export const metadata: Metadata = {
   title: "Ma Ludothèque — Organisateur de jeux de société",
   description:
     "Organisez votre collection de jeux de société, suivez vos parties et découvrez de nouveaux jeux.",
+  openGraph: {
+    title: "Ma Ludothèque — Organisateur de jeux de société",
+    description:
+      "Organisez votre collection de jeux de société, suivez vos parties et découvrez de nouveaux jeux.",
+    type: "website",
+    locale: "fr_FR",
+    siteName: "Ma Ludothèque",
+  },
+  icons: {
+    icon: "/icon",
+  },
 };
 
 export default function RootLayout({
@@ -36,7 +47,7 @@ export default function RootLayout({
                 Découvrir
               </NavLink>
             </div>
-            <div className="ml-auto">
+            <div className="ml-auto">{/* ⌘K spotlight trigger */}
               <CommandPaletteTrigger />
             </div>
           </div>
