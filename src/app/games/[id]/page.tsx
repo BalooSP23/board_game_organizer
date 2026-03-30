@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Users, Clock, Brain, Star, Box } from "lucide-react";
 import { AiSummary } from "@/components/ai-summary";
+import { GameGallery } from "@/components/game-gallery";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +16,10 @@ export default async function GameDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const game = await prisma.game.findUnique({ where: { id } });
+  const game = await prisma.game.findUnique({
+    where: { id },
+    include: { images: { orderBy: { sortOrder: "asc" } } },
+  });
 
   if (!game) notFound();
 
@@ -183,9 +187,9 @@ export default async function GameDetailPage({
         initialGeneratedAt={game.aiSummaryGeneratedAt?.toISOString() ?? null}
       />
 
-      {/* Placeholder sections */}
+      {/* Photo gallery & placeholder sections */}
       <div className="grid md:grid-cols-2 gap-4">
-        <PlaceholderCard title="Galerie photos" />
+        <GameGallery gameId={game.id} initialImages={game.images} />
         <PlaceholderCard title="Extensions" />
       </div>
     </div>
