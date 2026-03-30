@@ -35,6 +35,18 @@ export function furnitureDimensions(rows: number, cols: number) {
   };
 }
 
+/**
+ * Convert game box dimensions (cm) to proportional pixel sizes within a cell.
+ * Uses KALLAX_CELL real dimensions as reference.
+ */
+export function gameBoxPx(widthCm: number, heightCm: number): { w: number; h: number } {
+  const scale = CELL_PX / KALLAX_CELL.heightCm; // px per cm
+  return {
+    w: Math.round(widthCm * scale),
+    h: Math.round(heightCm * scale),
+  };
+}
+
 /** Y-offset of a shelf within its cell (0-based index), given N total shelves */
 export function shelfYOffset(index: number, totalShelves: number): number {
   const gap = CELL_PX / (totalShelves + 1);
